@@ -47,13 +47,27 @@ function TodoListCard() {
         [items],
     );
 
+    const onSubtaskAdd = (item, updatedSubtasks) => {
+        fetch('/items/$(item.id)', {
+            method: 'PUT',
+            body: JSON.stringify({
+                name: item.name,
+                completed: item.completed,
+                subtasks: updatedSubtasks,
+            }),
+            headers: {'Content-Type': 'application/json'},
+        })
+            .then((r) => r.json())
+            .then(onItemUpdate);
+    }
+
     if (items === null) return 'Loading...';
 
     return (
         <React.Fragment>
             <AddItemForm onNewItem={onNewItem} />
             {items.length === 0 && (
-                <p className="text-center">No items yet! Add one above!</p>
+                <p className="text-center">You have no todo items yet! Add one above!</p>
             )}
             {items.map(item => (
                 <ItemDisplay
@@ -61,6 +75,7 @@ function TodoListCard() {
                     key={item.id}
                     onItemUpdate={onItemUpdate}
                     onItemRemoval={onItemRemoval}
+                    onSubtaskAdd={subtask => onSubtaskAdd(item, subtask)}
                 />
             ))}
         </React.Fragment>
@@ -114,8 +129,18 @@ function AddItemForm({ onNewItem }) {
     );
 }
 
-function ItemDisplay({ item, onItemUpdate, onItemRemoval }) {
+function ItemDisplay({ item, onItemUpdate, onItemRemoval, onSubtaskAdd }) {
     const { Container, Row, Col, Button } = ReactBootstrap;
+    const [newSubtask, setNewSubtask] = React.useState('');
+    const[subtasks, setSubtasks] = React.useState(item.subtasks || []);
+
+    const addSubtask = () => {
+        if(newSubtask.trim() === '') return;
+        const updatedSubtasks = [...subtasks, newSubtask];
+        setSubtasks(updatedSubtasks);
+        onSubtaskAdd(updatedSubtasks);
+        setNewSubtask('');
+    }
 
     const toggleCompletion = () => {
         fetch(`/items/${item.id}`, {
@@ -160,6 +185,18 @@ function ItemDisplay({ item, onItemUpdate, onItemRemoval }) {
                 </Col>
                 <Col xs={10} className="name">
                     {item.name}
+                    <div className="subtasks">
+                        {subtasks.map((subtask, index) => (
+                            <div key={index}>{subtask}</div>
+                        ))}
+                    </div>
+                    <input 
+                        type="text"
+                        value={newSubtask}
+                        onChange={(e) => setNewSubtask(e.target.value)}
+                        placeholder="Add Subtask"
+                    />
+                    <button onClick={addSubtask}>Add</button>
                 </Col>
                 <Col xs={1} className="text-center remove">
                     <Button
