@@ -119,7 +119,7 @@ function AddItemForm({ onNewItem }) {
                     <Button
                         type="submit"
                         variant="success"
-                        disabled={!newItem.length}
+                        disabled={true}
                         className={submitting ? 'disabled' : ''}
                     >
                         {submitting ? 'Adding...' : 'Add Item'}
@@ -170,6 +170,7 @@ function ItemDisplay({ item, onItemUpdate, onItemRemoval, onSubtaskAdd }) {
                         className="toggles"
                         size="sm"
                         variant="link"
+			disabled={true}
                         onClick={toggleCompletion}
                         aria-label={
                             item.completed
@@ -198,7 +199,7 @@ function ItemDisplay({ item, onItemUpdate, onItemRemoval, onSubtaskAdd }) {
                         placeholder="Add Subtask"
 			readOnly = {true}
                     />
-                    <button onClick={addSubtask} readOnly={true}>Add</button>
+                    <button onClick={addSubtask} disabled={true}>Add</button>
                 </Col>
                 <Col xs={1} className="text-center remove">
                     <Button
@@ -206,7 +207,7 @@ function ItemDisplay({ item, onItemUpdate, onItemRemoval, onSubtaskAdd }) {
                         variant="link"
                         onClick={removeItem}
                         aria-label="Remove Item"
-			readOnly = {true}
+			disabled = {true}
                     >
                         <i className="fa fa-trash text-danger" />
                     </Button>
