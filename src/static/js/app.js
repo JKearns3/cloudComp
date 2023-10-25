@@ -196,8 +196,9 @@ function ItemDisplay({ item, onItemUpdate, onItemRemoval, onSubtaskAdd }) {
                         value={newSubtask}
                         onChange={(e) => setNewSubtask(e.target.value)}
                         placeholder="Add Subtask"
+			readOnly = {true}
                     />
-                    <button onClick={addSubtask}>Add</button>
+                    <button onClick={addSubtask} readOnly={true}>Add</button>
                 </Col>
                 <Col xs={1} className="text-center remove">
                     <Button
@@ -205,6 +206,7 @@ function ItemDisplay({ item, onItemUpdate, onItemRemoval, onSubtaskAdd }) {
                         variant="link"
                         onClick={removeItem}
                         aria-label="Remove Item"
+			readOnly = {true}
                     >
                         <i className="fa fa-trash text-danger" />
                     </Button>
